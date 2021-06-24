@@ -1,8 +1,11 @@
-# value-calculator
-
-## Project setup
+## Install librairies
 ```
 yarn install
+```
+
+## Tests
+```
+yarn test
 ```
 
 ### Compiles and hot-reloads for development
