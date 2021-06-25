@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="columns">
+    <div class="column">
     <table class="table">
       <thead>
       <tr>
@@ -26,7 +27,7 @@
               v-model="start_value"
           >
         </td>
-        <td>{{ formatFloat(compound(1))}}</td>
+        <td>{{formatFloat(compound(1))}}</td>
         <td>{{formatFloat(compound(2)) }}</td>
         <td>{{formatFloat(compound(3)) }}</td>
         <td>{{formatFloat(compound(4)) }}</td>
@@ -39,22 +40,24 @@
         <td>{{formatFloat(terminalValue()) }}</td>
       </tr>
       <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>&nbsp;</td>
+        <td>{{formatFloat(presentValue(1)) }}</td>
+        <td>{{formatFloat(presentValue(2)) }}</td>
+        <td>{{formatFloat(presentValue(3)) }}</td>
+        <td>{{formatFloat(presentValue(4)) }}</td>
+        <td>{{formatFloat(presentValue(5)) }}</td>
+        <td>{{formatFloat(presentValue(6)) }}</td>
+        <td>{{formatFloat(presentValue(7)) }}</td>
+        <td>{{formatFloat(presentValue(8)) }}</td>
+        <td>{{formatFloat(presentValue(9)) }}</td>
+        <td>{{formatFloat(presentValue(10)) }}</td>
         <td>{{formatFloat(presentValueTerminal())}}</td>
       </tr>
+      <tr><b>INTRINSIC VALUE : {{formatFloat(intrinsicValue())}}</b></tr>
       </tbody>
     </table>
-    <div>
+    </div>
+    <div class="column is-one-fifth" id="test">
       <div class="field">
         <label class="label">Growth rate yr 1-5</label>
         <div class="control">
@@ -97,6 +100,14 @@
           >
         </div>
       </div>
+
+
+      <div class="field">
+        <label class="checkbox" disabled>
+          <input type="checkbox" v-model="includePresentValue">
+          Include Present value sum
+        </label>
+      </div>
     </div>
   </div>
 </template>
@@ -107,20 +118,15 @@ import { compounds } from '@/utils'
 import { round } from 'lodash'
 
 @Options({
-  props: {
-    msg: String
-  }
+  props: {}
 })
 export default class HelloWorld extends Vue {
   discount_rate: number = 10
-  terminal_value: number = 0
   terminal_multiple: number = 20
   growth_rate_first_five: number = 5
   growth_rate_year_last_five: number = 5
   start_value: number = 0
-  growth_series: number[] = []
-  present_values: number[] = []
-  intrinsic_value: number = 0
+  includePresentValue: boolean = false
 
   presentValueTerminal (): number {
     return this.terminalValue() * (1 + this.discount_rate/100) ** -10
@@ -128,6 +134,19 @@ export default class HelloWorld extends Vue {
 
   terminalValue (): number {
     return this.compound(9) * this.terminal_multiple
+  }
+
+  intrinsicValue(): number {
+    if (!this.includePresentValue) {
+      return this.presentValueTerminal()
+    }
+
+    let sum = this.presentValueTerminal()
+    for (let i = 1; i <= 10; i++) {
+      sum += this.presentValue(i)
+    }
+
+    return sum
   }
 
   compound (year: number) {
@@ -144,6 +163,15 @@ export default class HelloWorld extends Vue {
     }
   }
 
+  presentValue (year: number) {
+    if (!this.includePresentValue) {
+      return 0
+    }
+
+    let compounded = this.compound(year)
+    return compounds(compounded, - year, this.discount_rate)
+  }
+
   formatFloat (value: number) {
     return round(value,2)
   }
@@ -151,4 +179,7 @@ export default class HelloWorld extends Vue {
 </script>
 
 <style scoped>
+#test{
+  padding-right: 3em;
+}
 </style>
