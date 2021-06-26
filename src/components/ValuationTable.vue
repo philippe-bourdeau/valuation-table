@@ -1,7 +1,7 @@
 <template>
-  <div class="columns">
+  <div class="columns is-3">
     <div class="column">
-    <table class="table">
+    <table class="table m-3">
       <thead>
       <tr>
         <th>Starting number</th>
@@ -53,7 +53,7 @@
         <td>{{formatFloat(presentValue(10)) }}</td>
         <td>{{formatFloat(presentValueTerminal())}}</td>
       </tr>
-      <tr><b>INTRINSIC VALUE : {{formatFloat(intrinsicValue())}}</b></tr>
+      <tr><b>&nbsp;&nbsp;INTRINSIC VALUE : {{formatFloat(intrinsicValue())}}</b></tr>
       </tbody>
     </table>
     </div>
@@ -62,7 +62,7 @@
         <label class="label">Growth rate yr 1-5</label>
         <div class="control">
           <input
-              class="input"
+              class="input is-small"
               type="text"
               v-model="growth_rate_first_five"
           >
@@ -73,7 +73,7 @@
         <label class="label">Growth rate yr 6-10</label>
         <div class="control">
           <input
-              class="input"
+              class="input is-small"
               type="text"
               v-model="growth_rate_year_last_five"
           >
@@ -84,7 +84,7 @@
         <label class="label">Terminal multiple</label>
         <div class="control">
           <input
-              class="input"
+              class="input is-small"
               type="text"
               v-model="terminal_multiple"
           >
@@ -94,7 +94,7 @@
         <label class="label">Discount rate</label>
         <div class="control">
           <input
-              class="input"
+              class="input is-small"
               type="text"
               v-model="discount_rate"
           >
@@ -120,7 +120,7 @@ import { round } from 'lodash'
 @Options({
   props: {}
 })
-export default class HelloWorld extends Vue {
+export default class ValuationTable extends Vue {
   discount_rate: number = 10
   terminal_multiple: number = 20
   growth_rate_first_five: number = 5
