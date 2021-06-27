@@ -8,7 +8,7 @@ RUN npm run build
 FROM nginx as production-stage
 RUN mkdir /app
 COPY --from=build-stage /app/dist /app
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 
 ## Need to find a way to provision those files outside of build context ; for now, copied manually from server to context
 #COPY /docker-volumes/etc/letsencrypt/live/cloudhelp.ca/fullchain.pem /etc/letsencrypt/live/clouhelp.ca/fullchain.pem
