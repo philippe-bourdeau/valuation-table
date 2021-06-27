@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: 'valuation-app'
     build:
-      context: .
+      context: ./docker
     ports:
       - "80:80"
       - "443:443"
