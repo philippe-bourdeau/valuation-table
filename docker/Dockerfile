@@ -1,3 +1,16 @@
+FROM nginx:latest AS generate-certificate-stage
+
+COPY certbot/nginx.conf /etc/nginx/nginx.conf
+WORKDIR /certbot
+RUN certbot/certbot certonly  \
+    --webroot \
+    --register-unsafely-without-email \
+    --agree-tos \
+    --webroot-path=/certbot \
+    --staging -v \
+    -d cloudhelp.ca -d www.cloudhelp.ca \
+RUN openssl dhparam -out /certbot/dhparam-2048.pem 2048
+
 FROM node:latest as build-stage
 WORKDIR /app
 COPY package*.json ./
@@ -9,9 +22,9 @@ FROM nginx as production-stage
 RUN mkdir /app
 COPY --from=build-stage /app/dist /app
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
-COPY ./docker/fullchain.pem /app/fullchain.pem
-COPY ./docker/privkey.pem /app/privkey.pem
-COPY ./docker/dhparam-2048.pem app/dhparam-2048.pem
+COPY --from=generate-certificate-stage /certbot/fullchain.pem /app/fullchain.pem
+COPY --from=generate-certificate-stage /certbot/privkey.pem /app/privkey.pem
+COPY --from=generate-certificate-stage /certbot/dhparam-2048.pem /app/dhparam-2048.pem
 
 
 ## Need to find a way to provision those files outside of build context ; for now, copied manually from server to context
